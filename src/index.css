@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  
+  --color-brand-hiro: #1a1a1a;
+  --color-brand-glgk: #404040;
+  --color-brand-sann: #737373;
+}
+
+body {
+  @apply bg-white text-neutral-900 antialiased;
+  font-family: var(--font-sans);
+}
+
+.mbti-card {
+  @apply overflow-hidden rounded-[2rem] border border-neutral-100 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.04)];
+}
+
+.btn-primary {
+  @apply flex w-full items-center justify-center rounded-2xl bg-neutral-900 px-6 py-4 font-display text-lg font-bold text-white transition-all hover:bg-neutral-800 active:scale-95 shadow-lg shadow-neutral-900/10;
+}
+
+.btn-secondary {
+  @apply flex w-full items-center justify-center rounded-2xl border border-neutral-200 bg-white px-6 py-4 font-display text-lg font-bold text-neutral-900 transition-all hover:bg-neutral-50 active:scale-95;
+}
+
+.input-minimal {
+  @apply w-full rounded-xl border border-neutral-200 bg-neutral-50 py-3 pl-10 pr-4 text-neutral-900 placeholder:text-neutral-400 focus:border-neutral-900 focus:bg-white focus:outline-none transition-all;
+}
+
+.btn-floating {
+  @apply fixed bottom-8 left-1/2 z-50 w-[calc(100%-4rem)] max-w-[calc(448px-4rem)] -translate-x-1/2;
+}
+
+.modal-overlay {
+  @apply fixed inset-0 z-[100] flex items-end justify-center bg-black/40 backdrop-blur-sm;
+}
+
+.modal-content {
+  @apply w-full max-w-md rounded-t-[2.5rem] bg-white p-8 pb-12 shadow-2xl;
+}
+
