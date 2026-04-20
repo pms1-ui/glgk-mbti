@@ -1,13 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;600;800&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/wanteddev/wanted-sans@v1.0.1/packages/wanted-sans/fonts/webfonts/variable/split/WantedSansVariable.min.css');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Outfit", sans-serif;
+  --font-sans: "Wanted Sans Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Wanted Sans Variable", "Outfit", sans-serif;
   
   --color-brand-hiro: #1a1a1a;
   --color-brand-glgk: #404040;
   --color-brand-sann: #737373;
+  --color-travel-green: #92B085;
+  --color-travel-text: #748D6C;
 }
 
 body {

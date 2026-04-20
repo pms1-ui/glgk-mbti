@@ -1,6 +1,6 @@
 import { useState, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plane, MapPin, RefreshCw, ChevronRight, Sparkles, Instagram, Share2, Download, Copy, ExternalLink, X } from 'lucide-react';
+import { Plane, MapPin, RefreshCw, ChevronLeft, ChevronRight, ChevronDown, ChevronUp, Sparkles, Instagram, Share2, Download, Copy, ExternalLink, X, Check } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import download from 'downloadjs';
 import { QUESTIONS, RESULTS } from './data';
@@ -11,32 +11,42 @@ type View = 'intro' | 'quiz' | 'result';
 export default function App() {
   const [view, setView] = useState<View>('intro');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<Axis[]>([]);
+  const [answers, setAnswers] = useState<(Axis | null)[]>(new Array(QUESTIONS.length).fill(null));
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [isEventExpanded, setIsEventExpanded] = useState(false);
   
   const resultRef = useRef<HTMLDivElement>(null);
 
   const handleStart = () => {
-    setAnswers([]);
+    setAnswers(new Array(QUESTIONS.length).fill(null));
     setCurrentQuestionIndex(0);
     setView('quiz');
   };
 
   const handleGoToIntro = () => {
-    setAnswers([]);
+    setAnswers(new Array(QUESTIONS.length).fill(null));
     setCurrentQuestionIndex(0);
     setView('intro');
   };
 
-  const handleAnswer = (axis: Axis) => {
-    const newAnswers = [...answers, axis];
+  const handleSelect = (axis: Axis) => {
+    const newAnswers = [...answers];
+    newAnswers[currentQuestionIndex] = axis;
     setAnswers(newAnswers);
+  };
 
+  const handleNext = () => {
     if (currentQuestionIndex < QUESTIONS.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setView('result');
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(currentQuestionIndex - 1);
     }
   };
 
@@ -57,11 +67,13 @@ export default function App() {
   };
 
   const result = useMemo(() => {
-    if (view !== 'result' || answers.length < QUESTIONS.length) return null;
+    if (view !== 'result' || answers.some(a => a === null)) return null;
+
+    const validAnswers = answers as Axis[];
 
     const getAxis = (a: Axis, b: Axis, defaultVal: string) => {
-      const countA = answers.filter(x => x === a).length;
-      const countB = answers.filter(x => x === b).length;
+      const countA = validAnswers.filter(x => x === a).length;
+      const countB = validAnswers.filter(x => x === b).length;
       if (countA > countB) return a;
       if (countB > countA) return b;
       return defaultVal;
@@ -86,47 +98,66 @@ export default function App() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex flex-col min-h-screen"
+            className="flex flex-col min-h-screen bg-[#92B085]"
           >
-            <div className="relative h-[60vh] w-full overflow-hidden">
+            <div className="relative w-full overflow-hidden leading-[0]">
               <img 
-                src="https://picsum.photos/seed/travel-hero/1200/1600" 
-                alt="Travel Hero" 
-                className="h-full w-full object-cover"
+                src="/images/intro.png" 
+                alt="Travel MBTI Test" 
+                className="w-full h-auto object-cover"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-white" />
-              
-              <div className="absolute top-12 left-8">
-                <div className="flex items-center gap-2 text-[10px] font-black tracking-[0.4em] text-white/80 uppercase">
-                  <Plane size={14} />
-                  HIRO / GLGK / SANN
-                </div>
-              </div>
-
-              <div className="absolute bottom-12 left-8 right-8">
-                <h1 className="font-display text-5xl font-black tracking-tight text-neutral-900 leading-[0.9] mb-4">
-                  TRAVEL<br />
-                  MBTI<br />
-                  TEST
-                </h1>
-                <p className="text-lg font-medium text-neutral-600 leading-tight">
-                  당신은 어떤 캐릭터의 여행자인가요?<br />
-                  8가지 질문으로 알아보는 나의 여행 스타일
-                </p>
-              </div>
             </div>
 
-            <div className="flex-1 px-8 pt-8 pb-32">
-              <div className="rounded-3xl border border-neutral-100 bg-neutral-50/50 p-6">
-                <div className="mb-2 flex items-center gap-2 text-xs font-bold text-neutral-900">
-                  <Sparkles size={16} className="text-neutral-400" />
-                  EVENT
+            <div className="flex-1 px-8 pt-10 pb-32 text-white">
+              <div className="mb-10 text-center">
+                <h2 className="text-[22px] font-bold mb-3 tracking-tight">나의 MBTI를 인스타그램에 공유해주세요!</h2>
+                <div className="h-0.5 w-10 bg-white/40 mx-auto rounded-full" />
+              </div>
+
+              <div className="mb-12 space-y-6">
+                <div className="rounded-[2.5rem] bg-white/10 backdrop-blur-md border border-white/20 p-8 shadow-xl">
+                  <p className="text-[17px] font-medium leading-[1.6] mb-6">
+                    인스타그램 스토리에 공유해주신 분들 중 <br />
+                    <span className="text-yellow-300 font-semibold">3명을 추첨</span>하여 소노호텔&리조트 <br />
+                    1박 숙박권 및 패밀리룩을 드립니다!
+                  </p>
+                  
+                  <div className="space-y-5 pt-6 border-t border-white/10">
+                    <h3 className="flex items-center gap-2 text-[15px] font-semibold">
+                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[#92B085] text-[10px]">📌</span>
+                      참여방법
+                    </h3>
+                    <div className="space-y-4">
+                      <div className="flex items-start gap-3">
+                        <span className="text-[10px] font-semibold uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded leading-none mt-1">step 1</span>
+                        <p className="text-[14px] font-medium leading-relaxed">여행 MBTI 테스트 참여 결과 화면 <br/>캡쳐 후 인스타 스토리에 업로드</p>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <span className="text-[10px] font-semibold uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded leading-none mt-1">step 2</span>
+                        <p className="text-[14px] font-medium leading-relaxed">스토리 내 <span className="underline font-semibold">@glgk_official</span> 태그</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm text-neutral-500 leading-relaxed">
-                  결과 인증 시 호텔 숙박권 추첨 증정!<br />
-                  지금 바로 테스트를 시작해보세요.
-                </p>
+
+                <div className="rounded-[2rem] bg-white/5 p-6 border border-white/10">
+                  <h3 className="text-xs font-semibold mb-4 opacity-60 uppercase tracking-widest">[ 참여기한 ]</h3>
+                  <ul className="text-sm space-y-2 font-medium">
+                    <li className="flex gap-2"><span className="opacity-50">•</span> 기한: 5월 1일(금) ~ 3일(일) (3일간)</li>
+                    <li className="flex gap-2"><span className="opacity-50">•</span> 당첨자 발표: 5월 7일(목) 발표</li>
+                  </ul>
+                </div>
+
+                <div className="rounded-[2rem] bg-white/5 p-6 border border-white/10">
+                  <h3 className="text-xs font-semibold mb-4 opacity-60 uppercase tracking-widest">[ 유의사항 ]</h3>
+                  <ul className="text-[12px] space-y-3 opacity-80 leading-relaxed font-medium">
+                    <li className="flex gap-2"><span>*</span> <span>당첨자는 지엘지케이 인스타그램 계정에서 공개됩니다.</span></li>
+                    <li className="flex gap-2"><span>*</span> <span>당첨자에게 1박 숙박권이 증정되며 최대 6명까지 숙박 가능합니다.</span></li>
+                    <li className="flex gap-2"><span>*</span> <span>5월 내 예약 완료 필수이며, 이용 가능 기간은 5월 8일 ~ 8월 8일까지입니다.</span></li>
+                    <li className="flex gap-2"><span>*</span> <span>패밀리룩은 HIRO / GLGK / SANN 중 선택 가능합니다.</span></li>
+                  </ul>
+                </div>
               </div>
             </div>
 
@@ -145,41 +176,93 @@ export default function App() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="flex flex-col px-8 py-16"
+            className="flex flex-col min-h-screen pt-12 pb-24"
           >
-            <div className="mb-12">
-              <div className="mb-4 flex items-center justify-between text-[10px] font-black tracking-[0.2em] text-neutral-400 uppercase">
-                <span>STEP {currentQuestionIndex + 1} / {QUESTIONS.length}</span>
-                <span className="text-neutral-900">{Math.round(((currentQuestionIndex + 1) / QUESTIONS.length) * 100)}%</span>
+            {/* Header */}
+            <div className="px-6 flex items-center justify-between mb-8">
+              <button 
+                onClick={currentQuestionIndex === 0 ? handleGoToIntro : handlePrev}
+                className="p-2 -ml-2 text-neutral-400 hover:text-neutral-900 transition-colors"
+              >
+                <ChevronLeft size={28} />
+              </button>
+              <div className="font-display text-xl font-bold tracking-[0.2em] text-neutral-900">
+                {currentQuestionIndex + 1} / {QUESTIONS.length}
               </div>
+              <div className="w-10" /> {/* Spacer */}
+            </div>
+
+            {/* Progress Bar */}
+            <div className="px-6 mb-12">
               <div className="h-1 w-full overflow-hidden rounded-full bg-neutral-100">
                 <motion.div 
-                  className="h-full bg-neutral-900"
+                  className="h-full bg-[#92B085]"
                   initial={{ width: 0 }}
                   animate={{ width: `${((currentQuestionIndex + 1) / QUESTIONS.length) * 100}%` }}
                 />
               </div>
             </div>
 
-            <div className="mb-16 min-h-[120px] flex items-center">
-              <h2 className="font-display text-3xl font-black leading-tight text-neutral-900">
+            {/* Question Text */}
+            <div className="px-6 mb-12 min-h-[80px] flex items-center">
+              <h2 className="font-display text-2xl font-bold leading-tight text-neutral-900">
                 {QUESTIONS[currentQuestionIndex].text}
               </h2>
             </div>
 
-            <div className="flex flex-col gap-4">
-              {[QUESTIONS[currentQuestionIndex].optionA, QUESTIONS[currentQuestionIndex].optionB].map((option, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleAnswer(option.axis)}
-                  className="group flex w-full items-center justify-between rounded-2xl border border-neutral-100 bg-white p-6 text-left transition-all hover:border-neutral-900 hover:shadow-xl active:scale-[0.98]"
-                >
-                  <span className="text-lg font-bold text-neutral-800 pr-4">{option.text}</span>
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-neutral-200 text-xs font-black group-hover:bg-neutral-900 group-hover:text-white transition-colors">
-                    {idx === 0 ? 'A' : 'B'}
-                  </div>
-                </button>
-              ))}
+            {/* Options */}
+            <div className="px-6 flex flex-col gap-4">
+              {[QUESTIONS[currentQuestionIndex].optionA, QUESTIONS[currentQuestionIndex].optionB].map((option, idx) => {
+                const isSelected = answers[currentQuestionIndex] === option.axis;
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleSelect(option.axis)}
+                    className={`group flex w-full items-center justify-between rounded-2xl border p-6 text-left transition-all ${
+                      isSelected 
+                        ? 'border-travel-green bg-travel-green/10 shadow-sm' 
+                        : 'border-neutral-100 bg-white hover:border-neutral-200'
+                    }`}
+                  >
+                    <span className={`text-[17px] font-semibold pr-4 ${isSelected ? 'text-travel-text' : 'text-neutral-800'}`}>
+                      {idx === 0 ? 'A.' : 'B.'} {option.text}
+                    </span>
+                    <div className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all ${
+                      isSelected 
+                        ? 'bg-travel-green border-travel-green text-white' 
+                        : 'border-neutral-200 text-transparent'
+                    }`}>
+                      <Check size={16} strokeWidth={3} />
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Sticky Navigation Footer */}
+            <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md bg-white p-6 shadow-[0_-8px_20px_rgba(0,0,0,0.03)] flex gap-3">
+              <button 
+                onClick={handlePrev}
+                disabled={currentQuestionIndex === 0 || answers[currentQuestionIndex] === null}
+                className={`flex h-14 w-1/4 items-center justify-center rounded-xl font-bold transition-all ${
+                  currentQuestionIndex === 0 || answers[currentQuestionIndex] === null
+                    ? 'bg-neutral-50 text-neutral-300 cursor-not-allowed'
+                    : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200'
+                }`}
+              >
+                이전
+              </button>
+              <button 
+                onClick={handleNext}
+                disabled={answers[currentQuestionIndex] === null}
+                className={`flex h-14 flex-1 items-center justify-center rounded-xl font-bold transition-all ${
+                  answers[currentQuestionIndex] === null
+                    ? 'bg-neutral-100 text-neutral-300 cursor-not-allowed'
+                    : 'bg-travel-green text-white shadow-lg shadow-travel-green/20'
+                }`}
+              >
+                {currentQuestionIndex === QUESTIONS.length - 1 ? '결과 확인' : '다음'}
+              </button>
             </div>
           </motion.div>
         )}
@@ -189,72 +272,193 @@ export default function App() {
             key="result"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="flex flex-col px-8 py-16 pb-24"
+            className="flex flex-col bg-white"
           >
-            <div ref={resultRef} className="bg-white">
-              <div className="mb-8 text-center">
-                <div className="mb-4 inline-block rounded-full border border-neutral-200 px-4 py-1 text-[10px] font-black tracking-[0.3em] text-neutral-400 uppercase">
-                  {result.brand}
-                </div>
-                <h3 className="mb-2 font-display text-lg font-bold tracking-[0.2em] text-neutral-400 uppercase">{result.mbti}</h3>
-                <h2 className="font-display text-4xl font-black text-neutral-900 leading-tight">{result.title}</h2>
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 pt-6 pb-2">
+              <button 
+                onClick={handleGoToIntro}
+                className="flex h-10 w-10 items-center justify-center rounded-full hover:bg-neutral-50"
+              >
+                <ChevronLeft size={24} className="text-neutral-900" />
+              </button>
+            </div>
+
+            <div ref={resultRef} className="bg-white px-8 pb-12">
+              {/* Type & Title */}
+              <div className="mb-8 text-center pt-8">
+                <p className="mb-2 text-sm font-bold text-neutral-400 uppercase tracking-widest leading-none">{result.mbti}</p>
+                <h2 className="font-display text-4xl font-bold text-travel-text leading-tight drop-shadow-sm">
+                  {result.title}
+                </h2>
               </div>
 
-              <div className="mbti-card mb-8 overflow-hidden">
-                <div className="aspect-square w-full bg-neutral-50">
+              {/* Character Image */}
+              <div className="relative mb-8 flex justify-center">
+                <div className="aspect-square w-72 overflow-hidden rounded-full bg-neutral-50 shadow-inner">
                   <img 
                     src={result.imageUrl} 
                     alt={result.title} 
-                    className="h-full w-full object-cover"
+                    className="h-full w-full object-contain"
                     referrerPolicy="no-referrer"
                   />
                 </div>
-                
-                <div className="p-8 text-center">
-                  <p className="mb-8 text-lg font-medium text-neutral-500 leading-relaxed">
-                    {result.description}
-                  </p>
-
-                  <div className="flex flex-wrap justify-center gap-2">
-                    {result.keywords.map(kw => (
-                      <span key={kw} className="rounded-lg bg-neutral-50 border border-neutral-100 px-3 py-1.5 text-xs font-bold text-neutral-400">
-                        #{kw}
-                      </span>
-                    ))}
-                  </div>
-                </div>
               </div>
 
-              <div className="mb-12 rounded-[2rem] border border-neutral-100 bg-white p-8 shadow-sm text-center">
-                <div className="mb-4 flex items-center justify-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-neutral-100 text-neutral-900">
-                    <MapPin size={20} />
+              {/* Keywords */}
+              <div className="mb-10 flex flex-wrap justify-center gap-2">
+                {result.keywords.map(kw => (
+                  <span key={kw} className="rounded-lg bg-neutral-50 px-4 py-1.5 text-xs font-bold text-neutral-400">
+                    #{kw}
+                  </span>
+                ))}
+              </div>
+
+              {/* Stats Section */}
+              <div className="mb-10 space-y-4">
+                {[
+                  { label: '에너지력', val: 4 },
+                  { label: '모험력', val: 1 },
+                  { label: '팩폭력', val: 2 },
+                  { label: '번개력', val: 3 },
+                ].map((stat) => (
+                  <div key={stat.label} className="flex items-center gap-4">
+                    <span className="w-16 text-sm font-semibold text-neutral-800">{stat.label}</span>
+                    <div className="flex flex-1 gap-1">
+                      {[1, 2, 3, 4, 5].map((seg) => (
+                        <div
+                          key={seg}
+                          className={`h-4 flex-1 rounded-sm ${
+                            seg <= stat.val ? 'bg-travel-green' : 'bg-neutral-100'
+                          }`}
+                        />
+                      ))}
+                    </div>
                   </div>
-                  <span className="font-display text-lg font-bold text-neutral-900">추천 여행지</span>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="mb-10 h-px w-full bg-neutral-100" />
+
+              {/* Description List */}
+              <div className="mb-12">
+                <ul className="space-y-4 text-[15px] font-medium text-neutral-700 leading-relaxed">
+                  {result.description.split('. ').filter(s => s.trim().length > 0).map((sentence, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="shrink-0 text-travel-green opacity-50">•</span>
+                      <span>{sentence.trim()}{sentence.endsWith('.') ? '' : '.'}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Recommendation Box */}
+              <div className="mb-12 rounded-3xl border border-neutral-100 bg-white px-8 py-8 text-center shadow-sm">
+                <div className="mb-4 flex items-center justify-center gap-2 text-neutral-400">
+                  <MapPin size={18} />
+                  <span className="text-sm font-semibold">추천 여행지</span>
                 </div>
-                <p className="text-xl font-black text-neutral-800">
+                <p className="text-lg font-bold text-neutral-900">
                   {result.recommendedDestinations}
                 </p>
               </div>
             </div>
 
-            <div className="space-y-4">
+            {/* Event Toggle Section */}
+            <div className="px-8 pb-4">
+              <div className="rounded-2xl border border-neutral-100 bg-neutral-50/50 overflow-hidden">
+                <button 
+                  onClick={() => setIsEventExpanded(!isEventExpanded)}
+                  className="flex w-full items-center justify-between p-5 transition-colors hover:bg-neutral-100/50"
+                >
+                  <div className="flex items-center gap-2">
+                    <Sparkles size={18} className="text-travel-green" />
+                    <span className="text-[15px] font-bold text-neutral-900 tracking-tight">[EVENT] 숙박권 증정 이벤트</span>
+                  </div>
+                  {isEventExpanded ? <ChevronUp size={20} className="text-neutral-400" /> : <ChevronDown size={20} className="text-neutral-400" />}
+                </button>
+
+                <AnimatePresence>
+                  {isEventExpanded && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: 'easeInOut' }}
+                    >
+                      <div className="px-5 pb-6 space-y-6 border-t border-neutral-100/50 pt-6">
+                        <div className="text-center">
+                          <h4 className="text-[16px] font-bold text-neutral-800 mb-2">나의 MBTI를 인스타그램에 공유해주세요!</h4>
+                          <div className="aspect-[16/9] w-full rounded-xl overflow-hidden mb-4">
+                            <img src="/images/intro.png" alt="Event" className="w-full h-full object-cover" />
+                          </div>
+                          <p className="text-[14px] font-medium leading-relaxed text-neutral-600">
+                            인스타그램 스토리에 공유해주신 분들 중 <span className="text-travel-text font-bold">3명을 추첨</span>하여<br />
+                            소노호텔&리조트 1박 숙박권 및 패밀리룩을 드립니다!
+                          </p>
+                        </div>
+
+                        <div className="space-y-4">
+                          <h5 className="flex items-center gap-2 text-[14px] font-bold text-neutral-800">
+                            <span className="text-[12px]">📌</span> 참여방법
+                          </h5>
+                          <div className="grid grid-cols-2 gap-3">
+                            <div className="bg-white p-3 rounded-xl border border-neutral-100">
+                              <span className="text-[10px] font-bold text-travel-text uppercase tracking-widest block mb-1">Step 1</span>
+                              <p className="text-[12px] leading-snug text-neutral-500 font-medium text-pretty">결과 화면 캡쳐 후 인스타 스토리 업로드</p>
+                            </div>
+                            <div className="bg-white p-3 rounded-xl border border-neutral-100">
+                              <span className="text-[10px] font-bold text-travel-text uppercase tracking-widest block mb-1">Step 2</span>
+                              <p className="text-[12px] leading-snug text-neutral-500 font-medium text-pretty">스토리 내 @glgk_official 태그</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-4">
+                          <h5 className="flex items-center gap-2 text-[14px] font-bold text-neutral-800">
+                            <span className="text-[12px]">📌</span> 참여기한
+                          </h5>
+                          <ul className="text-[13px] font-medium text-neutral-500 space-y-1 ml-1 leading-relaxed">
+                            <li>• 기한: 5월 1일(금) ~ 3일(일) (3일간)</li>
+                            <li>• 당첨자 발표: 5월 7일(목) 발표</li>
+                          </ul>
+                        </div>
+
+                        <div className="bg-neutral-100/50 rounded-xl p-4">
+                          <h5 className="text-[12px] font-bold text-neutral-400 mb-3 tracking-tight">[ 유의사항 ]</h5>
+                          <ul className="text-[11px] font-medium text-neutral-400 space-y-2 leading-relaxed">
+                            <li>* 당첨자는 지엘지케이 인스타그램 계정에서 공개됩니다.</li>
+                            <li>* 당첨자에게 1박 숙박권이 증정되며 최대 6명까지 숙박 가능합니다.</li>
+                            <li>* 5월 내 예약 완료 필수이며, 이용 가능 기간은 5월 8일 ~ 8월 8일까지입니다.</li>
+                            <li>* 패밀리룩은 HIRO / GLGK / SANN 중 선택 가능합니다.</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="px-8 pb-12 space-y-3">
               <a 
                 href="https://www.instagram.com/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="btn-primary !bg-[#E1306C] shadow-[#E1306C]/20"
+                className="flex w-full items-center justify-center rounded-2xl bg-travel-green px-6 py-4 font-display text-lg font-bold text-white shadow-lg shadow-travel-green/20 transition-all active:scale-95"
               >
                 <Instagram className="mr-2" size={20} />
                 스토리 올리러 가기
               </a>
 
-              <div className="grid grid-cols-2 gap-4">
-                <button onClick={() => setIsShareModalOpen(true)} className="btn-secondary !py-3 !text-base">
+              <div className="grid grid-cols-2 gap-3">
+                <button onClick={() => setIsShareModalOpen(true)} className="btn-secondary !text-base !py-3.5">
                   <Share2 className="mr-2" size={18} />
                   공유하기
                 </button>
-                <button onClick={handleSaveImage} className="btn-secondary !py-3 !text-base">
+                <button onClick={handleSaveImage} className="btn-secondary !text-base !py-3.5">
                   <Download className="mr-2" size={18} />
                   저장하기
                 </button>
@@ -262,12 +466,8 @@ export default function App() {
 
               <button onClick={handleGoToIntro} className="btn-secondary !py-4">
                 <RefreshCw className="mr-2" size={18} />
-                다시 테스트 해보기
+                테스트 다시 하기
               </button>
-            </div>
-
-            <div className="mt-12 text-center text-[10px] font-bold tracking-widest text-neutral-300 uppercase">
-              HIRO / GLGK / SANN
             </div>
           </motion.div>
         )}

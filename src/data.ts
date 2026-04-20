@@ -66,7 +66,7 @@ export const RESULTS: Result[] = [
     title: '판 뒤집는 여행자',
     description: '계획보다 현장 감각! 여행 루트 계획 안 세워도 그냥 그때 꽂히는 데 가는 스타일. 돌발 상황도 즐겁게 받아들이고, 여행 전체를 하나의 게임처럼 즐김.',
     keywords: ['즉흥', '액션', '스트릿'],
-    imageUrl: '/images/estp.jpg',
+    imageUrl: '/images/estp.png',
     recommendedDestinations: '제주 / 양양 서피비치'
   },
   {
@@ -75,7 +75,7 @@ export const RESULTS: Result[] = [
     title: '분위기 터뜨리는 여행자',
     description: '여행의 텐션과 재미를 만드는 타입. 맛집, 핫플, 숙소 등 취향이 확고하며 여행 내내 웃음이 끊이지 않게 함.',
     keywords: ['무드', '에너지', '소셜'],
-    imageUrl: '/images/esfp.jpg',
+    imageUrl: '/images/esfp.png',
     recommendedDestinations: '부산 / 강릉'
   },
   {
@@ -84,7 +84,7 @@ export const RESULTS: Result[] = [
     title: '루트 깨는 여행자',
     description: '기존 계획보다 더 재밌는 선택지를 찾는 타입. "이거보다 저게 더 재밌을 것 같은데?" 하며 루트를 바꿈. 근데 그게 또 기가 막히게 재밌음.',
     keywords: ['아이디어', '변화', '자유'],
-    imageUrl: '/images/entp.jpg',
+    imageUrl: '/images/entp.png',
     recommendedDestinations: '도쿄(시부야/하라주쿠) / 베를린'
   },
   {
@@ -93,7 +93,7 @@ export const RESULTS: Result[] = [
     title: '판 깔아주는 여행자',
     description: '여행 전체를 진두지휘하는 리더형 여행자. 가장 효율적인 루트를 짜고 실행하며, 돌발 상황도 완벽하게 통제함.',
     keywords: ['리더', '전략', '추진'],
-    imageUrl: '/images/entj.jpg',
+    imageUrl: '/images/entj.png',
     recommendedDestinations: '뉴욕(브루클린/맨해튼) / 파리'
   },
   {
@@ -102,7 +102,7 @@ export const RESULTS: Result[] = [
     title: '혼자 잘 노는 여행자',
     description: '자기 방식으로 여행을 즐기는 타입. 남들 시선 신경 안 쓰고 혼자서도 잘 놀며, 액티비티 하나만 있어도 즐거워함.',
     keywords: ['쿨', '기술', '독립'],
-    imageUrl: '/images/istp.jpg',
+    imageUrl: '/images/istp.png',
     recommendedDestinations: '아이슬란드 / 몽골'
   },
   {
@@ -111,7 +111,7 @@ export const RESULTS: Result[] = [
     title: '동선 정리해주는 여행자',
     description: '동선과 일정을 정리해 여행을 굴러가게 하는 타입. 숙소, 맛집, 교통편 등 모든 것을 미리 확인하고 준비함.',
     keywords: ['리더', '운영', '추진'],
-    imageUrl: '/images/estj.jpg',
+    imageUrl: '/images/estj.png',
     recommendedDestinations: '런던 / 뉴욕'
   },
   {
@@ -120,7 +120,7 @@ export const RESULTS: Result[] = [
     title: '다 챙기는 메이트',
     description: '모두가 편하고 즐겁도록 세심하게 챙기는 타입. "물은 챙겼어?", "배고프진 않아?" 하며 주변을 돌봄.',
     keywords: ['케어', '관계', '따뜻함'],
-    imageUrl: '/images/esfj.jpg',
+    imageUrl: '/images/esfj.png',
     recommendedDestinations: '다낭 / 후쿠오카'
   },
   {
@@ -129,7 +129,7 @@ export const RESULTS: Result[] = [
     title: '조용히 준비하는 메이트',
     description: '필요한 것들을 미리 준비해두는 안정형 타입. 남들이 찾기 전에 이미 가방에서 필요한 게 나오는 준비성 끝판왕.',
     keywords: ['배려', '준비', '안정'],
-    imageUrl: '/images/isfj.jpg',
+    imageUrl: '/images/isfj.png',
     recommendedDestinations: '교토 / 치앙마이'
   },
   {
@@ -138,7 +138,7 @@ export const RESULTS: Result[] = [
     title: '기억 만들어주는 메이트',
     description: '여행의 순간에 의미를 부여하고 오래 남게 만드는 타입. "우리가 함께한 이 시간이 정말 소중해" 하며 분위기를 훈훈하게 만듦.',
     keywords: ['감정', '리드', '공감'],
-    imageUrl: '/images/enfj.jpg',
+    imageUrl: '/images/enfj.png',
     recommendedDestinations: '피렌체 / 프라하'
   },
   {
@@ -147,7 +147,7 @@ export const RESULTS: Result[] = [
     title: '감성 기록자 메이트',
     description: '사진과 분위기, 순간의 결을 소중히 담는 타입. 빛, 온도, 습도... 모든 것이 완벽한 순간을 포착해 기록함.',
     keywords: ['감성', '기록', '무드'],
-    imageUrl: '/images/isfp.jpg',
+    imageUrl: '/images/isfp.png',
     recommendedDestinations: '파리 / 바르셀로나'
   },
   {
@@ -156,7 +156,7 @@ export const RESULTS: Result[] = [
     title: '사람 끌어당기는 메이트',
     description: '어디서든 친구를 만들고 분위기를 넓히는 타입. "저기 사람 많은데 가볼까?" 하며 새로운 만남과 경험을 즐김.',
     keywords: ['친화력', '호기심', '확산'],
-    imageUrl: '/images/enfp.jpg',
+    imageUrl: '/images/enfp.png',
     recommendedDestinations: '방콕 / 홍콩'
   },
   {
@@ -165,7 +165,7 @@ export const RESULTS: Result[] = [
     title: '이유 찾는 워크루',
     description: '여행을 통해 스스로의 방향을 찾으려는 타입. "나는 왜 여기 왔을까?" 하며 내면의 목소리에 귀 기울이는 철학적 여행자.',
     keywords: ['내면', '의미', '방향'],
-    imageUrl: '/images/infj.jpg',
+    imageUrl: '/images/infj.png',
     recommendedDestinations: '교토 / 포르투'
   },
   {
@@ -174,7 +174,7 @@ export const RESULTS: Result[] = [
     title: '감정 따라가는 워크루',
     description: '느낌 좋은 장소와 순간에 오래 머무는 타입. 계획보다는 발길 닿는 대로, 마음 가는 대로 움직이며 감성에 젖음.',
     keywords: ['감정', '몰입', '진정성'],
-    imageUrl: '/images/infp.jpg',
+    imageUrl: '/images/infp.png',
     recommendedDestinations: '치앙마이 / 베를린'
   },
   {
@@ -183,7 +183,7 @@ export const RESULTS: Result[] = [
     title: '전략 워크루',
     description: '효율적인 동선과 계획으로 자유를 만드는 타입. 최소한의 움직임으로 최대한의 만족을 끌어내는 전략가임.',
     keywords: ['전략', '효율', '설계'],
-    imageUrl: '/images/intj.jpg',
+    imageUrl: '/images/intj.png',
     recommendedDestinations: '싱가포르 / 런던'
   },
   {
@@ -192,7 +192,7 @@ export const RESULTS: Result[] = [
     title: '관찰하는 워크루',
     description: '도시와 공간의 구조를 유심히 보고 해석하는 타입. "이 건물은 왜 이렇게 지어졌을까?" 하며 호기심 가득한 눈으로 관찰함.',
     keywords: ['분석', '관찰', '호기심'],
-    imageUrl: '/images/intp.jpg',
+    imageUrl: '/images/intp.png',
     recommendedDestinations: '도쿄(진보초/나카메구로) / 런던'
   },
   {
@@ -201,7 +201,7 @@ export const RESULTS: Result[] = [
     title: '안정적으로 즐기는 워크루',
     description: '검증된 선택 안에서 만족도를 높이는 타입. 실패 없는 여행을 위해 꼼꼼하게 계획하고 안정적으로 즐김.',
     keywords: ['안정', '기준', '신뢰'],
-    imageUrl: '/images/istj.jpg',
+    imageUrl: '/images/istj.png',
     recommendedDestinations: '오사카 / 타이베이'
   }
 ];
